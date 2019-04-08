@@ -46,9 +46,11 @@ module.exports = () => {
         })
         const template =
           'export default (options, axios) => {\n' +
+          '  // 在此处校验传参 options.data\n' +
           '  axios\n' +
           '    .get(\'/api\')\n' +
           '    .then(e => {\n' +
+          '      // 在此处封装请求结果\n' +
           '      if (e.code === \'01\') {\n' +
           '        options.success(e)\n' +
           '      } else {\n' +

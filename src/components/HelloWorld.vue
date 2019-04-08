@@ -49,6 +49,9 @@ export default {
         success: e => {
           console.log(e)
         },
+        fail: e => {
+          console.log(e)
+        },
       })
     },
   },
