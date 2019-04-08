@@ -1,29 +1,39 @@
 # vue-demo
 
-## Project setup
+## 安装依赖
 
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 热重启本地开发
 
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 打包到生产环境
 
 ```
 npm run build
 ```
 
-### Lints and fixes files
+### 代码修复
 
 ```
 npm run lint
 ```
 
-### Customize configuration
+### (mark) 去除 git 提交时 eslint fix 功能
 
-See [Configuration Reference](https://cli.vuejs.org/config/).
+```json
+// package.json
+{
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,vue}": ["vue-cli-service lint", "git add"]
+  }
+}
+```
