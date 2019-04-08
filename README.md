@@ -26,6 +26,8 @@ npm run lint
 
 ### (mark) 去除 git 提交时 eslint fix 功能
 
+> 如果要在提交时执行 eslint fix 命令，可以在 package.json 加入这段代码
+
 ```json
 // package.json
 {
