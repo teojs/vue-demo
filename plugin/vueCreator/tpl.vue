@@ -1,0 +1,27 @@
+<template>
+  <div></div>
+</template>
+
+<script>
+export default {
+  name: 'component name here',
+  components: {},
+  data() {
+    return {}
+  },
+  // TODO：多余的钩子记得删掉
+  beforeCreate() {},
+  created() {},
+  beforeMount() {},
+  mounted() {},
+  beforeUpdate() {},
+  updated() {},
+  methods: {},
+  filters: {},
+  computed: {},
+  watch: {},
+}
+</script>
+
+<style scoped lang='less'>
+</style>

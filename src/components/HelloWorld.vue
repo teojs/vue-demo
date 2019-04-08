@@ -33,9 +33,25 @@
 <script>
 export default {
   name: 'HelloWorld',
+  data() {
+    return {}
+  },
   props: {
-    msg: String
-  }
+    msg: String,
+  },
+  mounted() {
+    this.test()
+  },
+  methods: {
+    test() {
+      this.$api.testApi({
+        data: { type: 1 },
+        success: e => {
+          console.log(e)
+        },
+      })
+    },
+  },
 }
 </script>
 

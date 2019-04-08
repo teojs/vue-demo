@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
@@ -33,6 +34,22 @@
     "*.{js,vue}": [
       "vue-cli-service lint",
       "git add"
+    ]
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "vuePlugins": {
+    "service": [
+      "./plugin/apiCreator/index.js",
+      "./plugin/vueCreator/index.js"
     ]
   }
 }
