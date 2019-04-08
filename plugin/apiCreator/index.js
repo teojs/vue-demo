@@ -31,7 +31,7 @@ module.exports = () => {
       importApi += `import ${apiName} from './apis/${api}'\n`
       exportsApi += `  ${apiName}: request(${apiName}),\n`
     })
-    const file = `${importApi}${routerFn}const apis = {\n${exportsApi}}\nexport default apis\n`
+    const file = `${importApi}\n${routerFn}const apis = {\n${exportsApi}}\nexport default apis\n`
     fs.writeFileSync(routerPath, file)
   }
 
