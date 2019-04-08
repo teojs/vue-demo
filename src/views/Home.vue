@@ -1,18 +1,37 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <MarkDown :article="article" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import MarkDown from '@/components/MarkDown.vue'
+import marked from 'marked'
 export default {
   name: 'home',
   components: {
-    HelloWorld,
+    MarkDown,
+  },
+  data() {
+    return {
+      article: '',
+    }
+  },
+  mounted() {
+    this.getReadme()
+  },
+  methods: {
+    getReadme() {
+      this.$api.getReadme({
+        success: e => {
+          this.article = marked(e)
+        },
+        fail: e => {
+          console.log(e)
+        },
+      })
+    },
   },
 }
 </script>

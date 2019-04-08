@@ -2,7 +2,7 @@
 
 import axios from './axios.config'
 
-import testApi from './apis/testApi'
+import getReadme from './apis/getReadme'
 
 const request = api => {
   return options => {
@@ -17,6 +17,6 @@ const request = api => {
 }
 
 const apis = {
-  testApi: request(testApi),
+  getReadme: request(getReadme),
 }
 export default apis
