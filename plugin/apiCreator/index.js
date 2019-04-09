@@ -20,7 +20,7 @@ module.exports = () => {
       '  }\n' +
       '}\n\n'
     let importApi =
-      '/* 此文件会自动生产，请勿修改 */\n\n' +
+      '/* 此文件会自动生成，请勿修改 */\n\n' +
       'import axios from \'./axios.config\'\n\n'
     let exportsApi = ''
     apis.forEach(api => {
