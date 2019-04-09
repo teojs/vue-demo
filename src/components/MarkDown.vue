@@ -22,10 +22,17 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
-@import '~highlight.js/styles/default.css';
+<style lang="less">
+@import '~highlight.js/styles/github.css';
 article {
   max-width: 960px;
   margin: auto;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+  pre,
+  code {
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier,
+      monospace;
+  }
 }
 </style>
