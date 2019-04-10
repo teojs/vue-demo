@@ -45,6 +45,10 @@ module.exports = () => {
           encoding: 'utf-8',
         })
         const template =
+          '/**\n' +
+          ' *\n' +
+          ' * 此处可以写一些接口说明\n' +
+          ' */\n' +
           'export default (options, axios) => {\n' +
           '  // 在此处校验传参 options.data\n' +
           '  axios\n' +

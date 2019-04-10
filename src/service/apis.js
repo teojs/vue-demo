@@ -1,4 +1,4 @@
-/* 此文件会自动生产，请勿修改 */
+/* 此文件会自动生成，请勿修改 */
 
 import axios from './axios.config'
 
