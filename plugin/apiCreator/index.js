@@ -1,5 +1,19 @@
 const fs = require('fs')
 const path = require('path')
+const format = require('prettier-eslint')
+const formatConfig = {
+  eslintConfig: {
+    parserOptions: {
+      ecmaVersion: 7,
+    },
+    rules: {
+      semi: ['error', 'never'],
+    },
+  },
+  fallbackPrettierOptions: {
+    singleQuote: true,
+  },
+}
 module.exports = () => {
   const apisPath = path.join(process.cwd(), 'src/service/apis')
 
@@ -7,21 +21,24 @@ module.exports = () => {
   const createApiRouter = () => {
     const apis = fs.readdirSync(apisPath)
     const routerPath = path.join(process.cwd(), 'src/service/apis.js')
-    const routerFn =
-      'const request = api => {\n' +
-      '  return options => {\n' +
-      '    options = {\n' +
-      '      success() {},\n' +
-      '      fail() {},\n' +
-      '      error() {},\n' +
-      '      ...options,\n' +
-      '    }\n' +
-      '    return api(options, axios)\n' +
-      '  }\n' +
-      '}\n\n'
-    let importApi =
-      '/* 此文件会自动生成，请勿修改 */\n\n' +
-      'import axios from \'./axios.config\'\n\n'
+    const routerFn = `
+      const request = api => {
+        return options => {
+          options = {
+            success() {},
+            fail() {},
+            error() {},
+            ...options,
+          }
+          return api(options, axios)
+        }
+      }
+    `
+
+    let importApi = `
+      /* 此文件会自动生成，请勿修改 */
+      import axios from './axios.config'
+    `
     let exportsApi = ''
     apis.forEach(api => {
       api = api.replace('.js', '')
@@ -31,8 +48,18 @@ module.exports = () => {
       importApi += `import ${apiName} from './apis/${api}'\n`
       exportsApi += `  ${apiName}: request(${apiName}),\n`
     })
-    const file = `${importApi}\n${routerFn}const apis = {\n${exportsApi}}\nexport default apis\n`
-    fs.writeFileSync(routerPath, file)
+    const file = `
+      ${importApi}
+      ${routerFn}
+      const apis = {\n${exportsApi}}
+      export default apis
+    `
+    // 格式化
+    const formatFile = format({
+      text: file,
+      ...formatConfig,
+    })
+    fs.writeFileSync(routerPath, formatFile)
   }
 
   createApiRouter()
@@ -44,29 +71,33 @@ module.exports = () => {
         const file = fs.readFileSync(path.join(apisPath, filename), {
           encoding: 'utf-8',
         })
-        const template =
-          '/**\n' +
-          ' *\n' +
-          ' * 此处可以写一些接口说明\n' +
-          ' */\n' +
-          'export default (options, axios) => {\n' +
-          '  // 在此处校验传参 options.data\n' +
-          '  axios\n' +
-          '    .get(\'/api\')\n' +
-          '    .then(e => {\n' +
-          '      // 在此处封装请求结果\n' +
-          '      if (e.code === \'01\') {\n' +
-          '        options.success(e)\n' +
-          '      } else {\n' +
-          '        options.fail(e)\n' +
-          '      }\n' +
-          '    })\n' +
-          '    .catch(err => {\n' +
-          '      options.error(err)\n' +
-          '    })\n' +
-          '}\n'
+        const template = `
+          /**
+           * 此处可以写一些接口说明
+           */
+          export default (options, axios) => {
+            // 在此处校验传参 options.data
+            axios
+              .get('/api')
+              .then(e => {
+                // 在此处封装请求结果
+                if (e.code === '01') {
+                  options.success(e)
+                } else {
+                  options.fail(e)
+                }
+              })
+              .catch(err => {
+                options.error(err)
+              })
+          }
+        `
         if (file === '') {
-          fs.writeFileSync(path.join(apisPath, filename), template)
+          const formatTpl = format({
+            text: template,
+            ...formatConfig,
+          })
+          fs.writeFileSync(path.join(apisPath, filename), formatTpl)
         }
       }
       createApiRouter()

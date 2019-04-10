@@ -1,7 +1,5 @@
 /* 此文件会自动生成，请勿修改 */
-
 import axios from './axios.config'
-
 import getReadme from './apis/getReadme'
 
 const request = api => {
