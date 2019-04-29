@@ -17,6 +17,7 @@ module.exports = {
         arrays: 'always-multiline',
       },
     ],
+    'standard/computed-property-even-spacing': 0,
   },
   parserOptions: {
     parser: 'babel-eslint',

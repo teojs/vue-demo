@@ -2,105 +2,133 @@ const fs = require('fs')
 const path = require('path')
 const format = require('prettier-eslint')
 const formatConfig = {
-  eslintConfig: {
-    parserOptions: {
-      ecmaVersion: 7,
-    },
-    rules: {
-      semi: ['error', 'never'],
-    },
-  },
-  fallbackPrettierOptions: {
-    singleQuote: true,
-  },
+  filePath: path.join(process.cwd(), '.eslintrc.js'),
 }
+
 module.exports = () => {
-  const apisPath = path.join(process.cwd(), 'src/service/apis')
+  const apisDir = path.join(process.cwd(), 'src/service/apis')
+  const routerFile = path.join(process.cwd(), 'src/service/apis.js')
 
-  // 自动写入api路由
-  const createApiRouter = () => {
-    const apis = fs.readdirSync(apisPath)
-    const routerPath = path.join(process.cwd(), 'src/service/apis.js')
-    const routerFn = `
-      const request = api => {
-        return options => {
-          options = {
-            success() {},
-            fail() {},
-            error() {},
-            ...options,
-          }
-          return api(options, axios)
-        }
+  // 接口封装
+  const routerFn = `
+  const request = api => {
+    return options => {
+      options = {
+        success() {},
+        fail() {},
+        error() {},
+        ...options,
       }
-    `
+      return api(options, axios)
+    }
+  }
+  `
 
+  // 自动写入api路由方法
+  const initApiRouter = () => {
     let importApi = `
-      /* 此文件会自动生成，请勿修改 */
-      import axios from './axios.config'
+    /* 此文件会自动生成，请勿修改 */
+
+    import axios from './axios.config'
+
     `
-    let exportsApi = ''
-    apis.forEach(api => {
-      api = api.replace('.js', '')
-      let apiName = /^\d/.test(api)
-        ? '_' + api.replace(/\./g, '')
-        : api.replace(/\./g, '')
-      importApi += `import ${apiName} from './apis/${api}'\n`
-      exportsApi += `  ${apiName}: request(${apiName}),\n`
-    })
+    const apiRouters = {}
+
+    const createApiRouters = (apisDir, parent) => {
+      const apis = fs.readdirSync(apisDir)
+      apis.forEach(api => {
+        let apiName = api.replace('.js', '')
+        apiName = /^\d/.test(apiName)
+          ? '_' + apiName.replace(/\./g, '')
+          : apiName.replace(/\./g, '')
+        const apiPath = path.join(apisDir, api)
+        if (fs.existsSync(apiPath)) {
+          if (
+            fs.statSync(apiPath).isFile() &&
+            path.extname(apiPath) === '.js'
+          ) {
+            if (parent) {
+              importApi += `import ${parent +
+                apiName} from './apis/${parent}/${api.replace('.js', '')}'\n`
+              apiRouters[parent][apiName] = `request(${parent + apiName})`
+            } else {
+              importApi += `import ${apiName} from './apis/${api.replace(
+                '.js',
+                ''
+              )}'\n`
+              apiRouters[apiName] = `request(${apiName})`
+            }
+          }
+          if (fs.statSync(apiPath).isDirectory()) {
+            apiRouters[apiName] = {}
+            createApiRouters(apiPath, apiName)
+          }
+        }
+      })
+    }
+    createApiRouters(apisDir)
+
     const file = `
       ${importApi}
       ${routerFn}
-      const apis = {\n${exportsApi}}
+      const apis = ${JSON.stringify(apiRouters).replace(/"/g, '')}
       export default apis
     `
-    // 格式化
     const formatFile = format({
       text: file,
       ...formatConfig,
     })
-    fs.writeFileSync(routerPath, formatFile)
+    fs.writeFileSync(routerFile, formatFile)
   }
 
-  createApiRouter()
-
-  fs.watch(apisPath, (eventType, filename) => {
-    if (eventType === 'rename') {
-      if (fs.existsSync(path.join(apisPath, filename))) {
-        // 自动写入模板
-        const file = fs.readFileSync(path.join(apisPath, filename), {
-          encoding: 'utf-8',
-        })
-        const template = `
-          /**
-           * 此处可以写一些接口说明
-           */
-          export default (options, axios) => {
-            // 在此处校验传参 options.data
-            axios
-              .get('/api')
-              .then(e => {
-                // 在此处封装请求结果
-                if (e.code === '01') {
-                  options.success(e)
-                } else {
-                  options.fail(e)
-                }
-              })
-              .catch(err => {
-                options.error(err)
-              })
-          }
-        `
-        if (file === '') {
-          const formatTpl = format({
-            text: template,
-            ...formatConfig,
+  // 自动写入模板方法
+  const writeTpl = filePath => {
+    const file = fs.readFileSync(filePath, {
+      encoding: 'utf-8',
+    })
+    const template = `
+      /**
+       * 此处可以写一些接口说明
+       */
+      export default (options, axios) => {
+        // 在此处校验传参 options.data
+        axios
+          .get('/api')
+          .then(e => {
+            // 在此处封装请求结果
+            if (e.code === '01') {
+              options.success(e)
+            } else {
+              options.fail(e)
+            }
           })
-          fs.writeFileSync(path.join(apisPath, filename), formatTpl)
-        }
+          .catch(err => {
+            options.error(err)
+          })
       }
-      createApiRouter()
+    `
+    if (file === '') {
+      const formatTpl = format({
+        text: template,
+        ...formatConfig,
+      })
+      fs.writeFileSync(filePath, formatTpl)
     }
-  })
+  }
+
+  // 初始化路由
+  initApiRouter()
+
+  if (process.env.NODE_ENV === 'development') {
+    // 只有在开发环境时 监听文件的变化并自动写入模板和初始化路由
+    fs.watch(apisDir, { recursive: true }, (eventType, filename) => {
+      const filePath = path.join(apisDir, filename)
+      if (eventType === 'rename') {
+        if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+          writeTpl(filePath)
+        }
+        initApiRouter()
+      }
+    })
+  }
 }

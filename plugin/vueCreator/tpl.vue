@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>component name here</div>
 </template>
 
 <script>
@@ -16,6 +16,8 @@ export default {
   mounted() {},
   beforeUpdate() {},
   updated() {},
+  beforeDestroy() {},
+  destroyed() {},
   methods: {},
   filters: {},
   computed: {},
