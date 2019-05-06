@@ -5,4 +5,8 @@
 </template>
 
 <style lang="less">
+@import url(~@/styles/index.less);
+#app {
+  min-height: calc(100vh);
+}
 </style>

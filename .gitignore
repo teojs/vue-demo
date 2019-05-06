@@ -22,3 +22,4 @@ yarn-error.log*
 package-lock.json
 local.config.js
 src/service/apis.js
+package-lock.json
