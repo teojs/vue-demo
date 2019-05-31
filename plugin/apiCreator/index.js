@@ -83,37 +83,36 @@ module.exports = () => {
 
   // 自动写入模板方法
   const writeTpl = filePath => {
-    const file = fs.readFileSync(filePath, {
-      encoding: 'utf-8',
-    })
-    const template = `
+    setTimeout(() => {
+      const file = fs.readFileSync(filePath, {
+        encoding: 'utf-8',
+      })
+      const template = `
       /**
-       * 此处可以写一些接口说明
+       * 接口说明...
        */
       export default (options, axios) => {
-        // 在此处校验传参 options.data
-        axios
-          .get('/api')
-          .then(e => {
-            // 在此处封装请求结果
-            if (e.code === '01') {
-              options.success(e)
-            } else {
-              options.fail(e)
-            }
-          })
-          .catch(err => {
-            options.error(err)
-          })
+        axios({
+          method: 'post',
+          url: '/api',
+          // params: options.data,
+          data: options.data,
+        }).then(e => {
+          if (e.code === '01') {
+            return options.success(e.body)
+          }
+          options.fail(e.message)
+        })
       }
     `
-    if (file === '') {
-      const formatTpl = format({
-        text: template,
-        ...formatConfig,
-      })
-      fs.writeFileSync(filePath, formatTpl)
-    }
+      if (file === '') {
+        const formatTpl = format({
+          text: template,
+          ...formatConfig,
+        })
+        fs.writeFileSync(filePath, formatTpl)
+      }
+    }, 1000)
   }
 
   // 初始化路由
