@@ -9,7 +9,7 @@ export default {
   data() {
     return {}
   },
-  // TODO：多余的钩子记得删掉
+  // TODO：多余的钩子记得删掉(包括我这句！)
   beforeCreate() {},
   created() {},
   beforeMount() {},
