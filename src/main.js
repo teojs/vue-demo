@@ -6,12 +6,10 @@ import utils from './utils'
 Vue.use(utils)
 Vue.config.productionTip = false
 
-// Vue.component('mc-container', McContainer)
+// 自动注册全局组件
 const components = require.context('./components', false, /\.vue$/)
 components.keys().forEach(key => {
-  const name = key.match(/\.\/(.+?)\.vue/)[1]
-  console.log(name)
-  Vue.component(name, components(key).default)
+  Vue.component(key.match(/\.\/(.+?)\.vue/)[1], components(key).default)
 })
 
 new Vue({
