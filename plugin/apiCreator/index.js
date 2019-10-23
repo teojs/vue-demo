@@ -18,17 +18,17 @@ module.exports = () => {
       /**
        * 接口说明...
        */
-      export default (options, axios) => {
-        axios({
+      export default function(ctx) {
+        this.$http({
           method: 'post',
           url: '/api',
-          // params: options.data,
-          data: options.data,
+          // params: ctx.data,
+          data: ctx.data,
         }).then(e => {
           if (e.code === '01') {
-            return options.success(e.body)
+            return ctx.success(e.body)
           }
-          options.fail(e.message)
+          ctx.fail(e.message)
         })
       }
     `

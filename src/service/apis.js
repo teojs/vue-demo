@@ -2,20 +2,6 @@
 
 import axios from './axios.config'
 
-const request = api => {
-  return options => {
-    options = {
-      success() {},
-      fail() {},
-      error() {},
-      ...options,
-    }
-    return api(options, axios)
-  }
-}
-
-// 自动注册/src/service/apis的所以接口
-
 const apis = {}
 const allApis = require.context('./apis', true, /\.js$/)
 allApis.keys().forEach(key => {
@@ -24,12 +10,16 @@ allApis.keys().forEach(key => {
     .replace(/\//g, '.')
     .split('.')
   if (path.length === 1) {
-    apis[path[0]] = request(allApis(key).default)
+    apis[path[0]] = allApis(key).default.bind(apis)
   }
   if (path.length === 2) {
     apis[path[0]] = {}
-    apis[path[0]][path[1]] = request(allApis(key).default)
+    apis[path[0]][path[1]] = allApis(key).default.bind(apis)
   }
 })
+
+apis.$http = axios
+apis.$api = apis
+// 可以在此处注册一些弹框组件
 
 export default apis

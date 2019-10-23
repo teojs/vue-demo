@@ -9,8 +9,14 @@
  * @param {function} options.error     请求错误后回调的方法
  * @param {function} axios             异步请求的方法
  */
-export default (options, axios) => {
-  axios.get('/mock/README.md').then(e => {
+export default function(options) {
+  this.$api.test.test({
+    success: res => {
+      console.log(res)
+    },
+  })
+  console.log(options)
+  this.$http.get('/mock/README.md').then(e => {
     options.success(e)
     // if (e.code === '01') {
     //   options.success(e)
