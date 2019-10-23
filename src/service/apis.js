@@ -3,14 +3,14 @@
 import axios from './axios.config'
 
 const request = function(api) {
-  return options => {
-    options = {
+  return ctx => {
+    ctx = {
       success() {},
       fail() {},
       error() {},
-      ...options,
+      ...ctx,
     }
-    return api.bind(this)(options)
+    return api.bind(this)(ctx)
   }
 }
 
