@@ -2,6 +2,20 @@
 
 import axios from './axios.config'
 
+const request = function(api) {
+  return options => {
+    options = {
+      success() {},
+      fail() {},
+      error() {},
+      ...options,
+    }
+    return api.bind(this)(options)
+  }
+}
+
+// 自动注册/src/service/apis的所以接口
+
 const apis = {}
 const allApis = require.context('./apis', true, /\.js$/)
 allApis.keys().forEach(key => {
@@ -10,11 +24,11 @@ allApis.keys().forEach(key => {
     .replace(/\//g, '.')
     .split('.')
   if (path.length === 1) {
-    apis[path[0]] = allApis(key).default.bind(apis)
+    apis[path[0]] = request.bind(apis)(allApis(key).default)
   }
   if (path.length === 2) {
     apis[path[0]] = {}
-    apis[path[0]][path[1]] = allApis(key).default.bind(apis)
+    apis[path[0]][path[1]] = request.bind(apis)(allApis(key).default)
   }
 })
 

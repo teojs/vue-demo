@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <router-link to="/readme">README.md</router-link>
+    <h1>你好，世界</h1>
+    <hello-world :msg="msg" />
   </div>
 </template>
 
@@ -11,16 +12,29 @@ export default {
   components: {},
   data() {
     return {
-      article: '',
+      msg: '',
     }
   },
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getHelloWorld()
+  },
+  methods: {
+    getHelloWorld() {
+      this.$api.helloWorld({
+        success: e => {
+          this.msg = e
+        },
+      })
+    },
+  },
 }
 </script>
 
 <style lang="less" scoped>
 .home {
   text-align: center;
+  h1 {
+    font-size: 100px;
+  }
 }
 </style>

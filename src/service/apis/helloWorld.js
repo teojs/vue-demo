@@ -3,8 +3,8 @@
  */
 export default function(ctx) {
   this.$http({
-    method: 'post',
-    url: '/api',
+    method: 'get',
+    url: '/mock/helloWorld.json',
     // params: ctx.data,
     data: ctx.data,
   }).then(e => {

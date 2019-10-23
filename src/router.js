@@ -13,11 +13,12 @@ export default new Router({
       name: 'home',
       component: Home,
     },
-    {
-      path: '/readme',
-      name: 'readme',
-      component: () =>
-        import(/* webpackChunkName: "readme" */ './views/Readme.vue'),
-    },
+    // 异步
+    // {
+    //   path: '/asyn',
+    //   name: 'asyn',
+    //   component: () =>
+    //     import(/* webpackChunkName: "asyn" */ './views/Asyn.vue'),
+    // },
   ],
 })
