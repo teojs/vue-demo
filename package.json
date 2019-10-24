@@ -27,6 +27,7 @@
     "less-loader": "^4.1.0",
     "lint-staged": "^8.1.4",
     "prettier-eslint": "^8.8.2",
+    "vue-cli-plugin-autocreate": "^1.0.0",
     "vue-template-compiler": "^2.5.21"
   },
   "postcss": {
@@ -38,11 +39,5 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ],
-  "vuePlugins": {
-    "service": [
-      "./plugin/apiCreator/index.js",
-      "./plugin/vueCreator/index.js"
-    ]
-  }
+  ]
 }
