@@ -4,7 +4,7 @@ import Home from './views/Home.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const routers = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -14,11 +14,17 @@ export default new Router({
       component: Home,
     },
     // 异步
-    // {
-    //   path: '/asyn',
-    //   name: 'asyn',
-    //   component: () =>
-    //     import(/* webpackChunkName: "asyn" */ './views/Asyn.vue'),
-    // },
+    {
+      path: '/asyn',
+      name: 'home',
+      component: () =>
+        import(/* webpackChunkName: "asyn" */ './views/Home.vue'),
+    },
   ],
 })
+
+routers.beforeEach((to, from, next) => {
+  document.title = to.meta.title || ''
+})
+
+export default routers
