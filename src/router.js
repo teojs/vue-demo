@@ -25,6 +25,7 @@ const routers = new Router({
 
 routers.beforeEach((to, from, next) => {
   document.title = to.meta.title || ''
+  next()
 })
 
 export default routers
